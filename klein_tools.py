@@ -82,8 +82,13 @@ class Labor:
         c = _db_handle.cursor()
         c.execute("SELECT * FROM Labsch WHERE Kurz = ?", self.lab)
         res = c.fetchall()
+        c.close()
         if not res or len(res) != 1:
             raise ValueError("Lab reference '%s' has returned '%d' rows" % (self.lab, len(res)))
+        self.service = res[0].KurzLK.strip()
+        self.group = res[0].Grup
+        if self.service == '':
+            del self.service
 
 def guess_if_positive(result):
     result = result.strip().lower()
