@@ -75,6 +75,14 @@ class Intern:
 
         return None
 
+    def k_table(self):
+        c = _db_handle.cursor()
+        # encoding problems with "Versicherungsträger" should be column index 14
+        c.execute("SELECT * FROM Stammdaten WHERE Intern = ?", self.Intern)
+        res = c.fetchone()
+        c.close()
+        return 'K' + res[14]
+
 class Labor:
     def __init__(self, sofia_order):
         self.lab = 'SO' + sofia_order
