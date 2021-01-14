@@ -142,7 +142,7 @@ class Kassenkartei:
             raise TypeError("argument pos must be a string")
         if len(pos) > 7:
             raise ValueError("argument pos exceeds maximum length of 7")
-        pos = ' ' * (7 - len(pos)) + pos
+        pos += ' ' * (7 - len(pos))
 
         try:
             cnt = int(cnt)
