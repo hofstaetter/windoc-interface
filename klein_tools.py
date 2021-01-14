@@ -13,14 +13,34 @@ def init(db):
     _db_handle = db
 
 class KTable:
+    LUT = {
+            '11': 'K10', # ÖGK-W
+            '12': 'K10', # ÖGK-N
+            '13': 'K10', # ÖGK-B
+            '14': 'K10', # ÖGK-O
+            '15': 'K10', # ÖGK-ST
+            '16': 'K10', # ÖGK-K
+            '17': 'K10', # ÖGK-S
+            '18': 'K10', # ÖGK-T
+            '19': 'K10', # ÖGK-V
+            '05': 'K05', # BVAEB-EB
+            '07': 'K07', # BVAEB-OEB
+            '40': 'K40', # SVS-GW
+            '50': 'K50', # SVS-LW
+            '1A': 'K1A', # KFA Wien
+            '4A': 'K4A', # KFA Linz
+            '5A': 'K5A', # KFA Graz
+            }
+
     def __init__(self, handle):
         assert type(handle) == str and len(handle) == 2
         self.num = handle
+        self.table = KTable.LUT[handle]
 
     def position_from_service(self, serv):
         c = _db_handle.cursor()
         try:
-            c.execute("SELECT * FROM K%s WHERE Kurz = ?" % self.num, serv)
+            c.execute("SELECT * FROM %s WHERE Kurz = ?" % self.table, serv)
         except Exception as ex:
             print(self.num)
             print(repr(ex))
