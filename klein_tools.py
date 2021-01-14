@@ -49,7 +49,7 @@ class KTable:
         c.close()
         if not res or len(res) != 1:
             raise ValueError(f"Service {serv} returned erroneous count of results: {len(res)}")
-        return res.Posnummer
+        return res[0].Posnummer
 
 class Intern:
     """Helper class to work with patients"""
