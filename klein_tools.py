@@ -4,11 +4,32 @@
 import logging
 _log = logging.getLogger('klein_tools')
 
+import datetime
+
 _db_handle = None
 
 def init(db):
     global _db_handle
     _db_handle = db
+
+class KTable:
+    def __init__(self, handle):
+        assert type(handle) == str and len(handle) == 2
+        self.num = handle
+
+    def position_from_service(self, serv):
+        c = _db_handle.cursor()
+        try:
+            c.execute("SELECT * FROM K%s WHERE Kurz = ?" % self.num, serv)
+        except Exception as ex:
+            print(self.num)
+            print(repr(ex))
+            raise
+        res = c.fetchall()
+        c.close()
+        if not res or len(res) != 1:
+            raise ValueError(f"Service {serv} returned erroneous count of results: {len(res)}")
+        return res.Posnummer
 
 class Intern:
     """Helper class to work with patients"""
@@ -75,15 +96,56 @@ class Intern:
 
         return None
 
-    def k_table(self):
+    def kassen_ref(self):
         c = _db_handle.cursor()
         # encoding problems with "Versicherungsträger" should be column index 14
         c.execute("SELECT * FROM Stammdaten WHERE Intern = ?", self.Intern)
         res = c.fetchone()
         c.close()
-        return 'K' + res[14]
+        return KTable(res[14])
 
-class Labor:
+class Kassenkartei:
+    def leistung(datum, pos, cnt, kasse): #, price=None, clock=None, chef=None, pstat=None):
+        if type(datum) == datetime.datetime:
+            datum = datum.strftime("%Y%m%d")
+        elif type(datum) == str:
+            if len(datum) != 8:
+                raise ValueError("argument datum expects CHAR(8) date value")
+        elif type(datum) == int:
+            datum = str(datum)
+            if len(datum) != 8:
+                raise ValueError("argument datum expects CHAR(8) date value")
+        else:
+            raise TypeError("argument datum has wrong type. Use one of datetime, str, int")
+
+        if type(pos) != str:
+            raise TypeError("argument pos must be a string")
+        if len(pos) > 7:
+            raise ValueError("argument pos exceeds maximum length of 7")
+        pos = ' ' * (7 - len(pos)) + pos
+
+        try:
+            cnt = int(cnt)
+        except TypeError:
+            raise TypeError("argument cnt must be castable to integer")
+        if cnt > 9999 or cnt < 0:
+            raise ValueError("argument cnt needs to be at least 0 and less than 9999")
+        cnt = str(cnt)
+        cnt = ' ' * (4 - len(cnt)) + cnt
+
+        if type(kasse) != str:
+            raise TypeError("argument kasse must be a string")
+        if len(kasse) > 2:
+            raise ValueError("argument kasse must be CHAR(2) kassen ID")
+
+        clock = ' ' * 4 # format HHMM
+        pstat = ' ' * 8 # format ddmmYYYY
+        price = ' ' * 10 # str repr of EUR
+        chef1 = ' '
+        chef2 = ' ' * 2 # CHEF CHAR(3)
+        return f"{datum}{pos}    {clock}{cnt} {chef1}{pstat}{price}{chef2}{kasse}"
+
+class LabTemplate:
     def __init__(self, sofia_order):
         self.lab = 'SO' + sofia_order
         # step 1: lookup in lab templates
