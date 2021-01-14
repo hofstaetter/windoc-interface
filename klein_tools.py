@@ -155,7 +155,7 @@ class Kassenkartei:
 
         if type(kasse) != str:
             raise TypeError("argument kasse must be a string")
-        if len(kasse) > 2:
+        if len(kasse) != 2:
             raise ValueError("argument kasse must be CHAR(2) kassen ID")
 
         clock = ' ' * 4 # format HHMM
