@@ -125,7 +125,7 @@ class Intern:
         return KTable(res[14])
 
 class Kassenkartei:
-    def leistung(datum, pos, cnt, kasse): #, price=None, clock=None, chef=None, pstat=None):
+    def leistung(datum, pos, cnt, kasse, clock): #, price=None, clock=None, chef=None, pstat=None):
         if type(datum) == datetime.datetime:
             datum = datum.strftime("%Y%m%d")
         elif type(datum) == str:
@@ -151,14 +151,25 @@ class Kassenkartei:
         if cnt > 9999 or cnt < 0:
             raise ValueError("argument cnt needs to be at least 0 and less than 9999")
         cnt = str(cnt)
-        cnt = ' ' * (4 - len(cnt)) + cnt
+        #cnt = ' ' * (4 - len(cnt)) + cnt
+        cnt += ' ' * (4 - len(cnt))
 
         if type(kasse) != str:
             raise TypeError("argument kasse must be a string")
         if len(kasse) != 2:
             raise ValueError("argument kasse must be CHAR(2) kassen ID")
 
-        clock = ' ' * 4 # format HHMM
+        if not clock:
+            clock = ' ' * 4
+        if type(clock) == str:
+            if len(clock) > 4:
+                raise ValueError("argument clock must not exceed CHAR(4)")
+            clock += ' ' * (4 - len(clock))
+        elif type(clock) == datetime.datetime:
+            clock = clock.strftime("%H%M")
+        else:
+            raise TypeError("argument clock must be a string or datetime object")
+
         pstat = ' ' * 8 # format ddmmYYYY
         price = ' ' * 10 # str repr of EUR
         chef1 = ' '
