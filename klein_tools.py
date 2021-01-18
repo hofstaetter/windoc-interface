@@ -30,6 +30,7 @@ class KTable:
             '1A': 'K1A', # KFA Wien
             '4A': 'K4A', # KFA Linz
             '5A': 'K5A', # KFA Graz
+            'PR': 'KPR', # Privat
             }
 
     def __init__(self, handle):
