@@ -109,8 +109,11 @@ class Intern:
         res = c.fetchone()
         c.close()
 
-        self._data['mail'] = res.Email
-        return res.Email
+        mail = res.Email.strip()
+        if mail == '':
+            mail = None
+        self._data['mail'] = mail
+        return mail
 
     def mail(self):
         """Retrieve mail address

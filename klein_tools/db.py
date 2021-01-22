@@ -42,6 +42,8 @@ class Queries:
             i._find_phone(Telefon, Tel1, Tel2, Handy)
             if Email and Email.strip() != '':
                 i._data['mail'] = Email
+            else:
+                i._data['mail'] = None
             ret.append(i)
 
         return ret
