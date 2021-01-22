@@ -29,7 +29,7 @@ class Queries:
             list[Intern]
         """
         c = self._ctx.unmanaged_cursor()
-        query = "SELECT Intern, Email, Telefon, Tel1, Tel2, Handy FROM Stammdaten JOIN Stammzusatz ON Stammdaten.Intern = Stammzusatz.Intern %s" % with_condition
+        query = "SELECT Stammdaten.Intern, Email, Telefon, Tel1, Tel2, Handy FROM Stammdaten JOIN Stammzusatz ON Stammdaten.Intern = Stammzusatz.Intern %s" % with_condition
         _log.getChild('Queries.all_Interns_with_comms').debug(query)
         c.execute(query)
         res = c.fetchall()
