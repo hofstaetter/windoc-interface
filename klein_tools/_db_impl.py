@@ -74,6 +74,7 @@ class Intern:
                 self._data['phone'] = ret
                 return ret
 
+        self._data['phone'] = None
         return None
 
     def _query_phone(self):
@@ -83,9 +84,9 @@ class Intern:
         c.close()
 
         if res is None:
-            return None
-
-        Telefon, Tel1, Tel2, Handy = res
+            Telefon, Tel1, Tel2, Handy = (None, None, None, None)
+        else:
+            Telefon, Tel1, Tel2, Handy = res
 
         return self._find_phone(Telefon, Tel1, Tel2, Handy)
 
