@@ -1,7 +1,7 @@
 
 # v2.1
 
-Fix missing import
+Fix missing import.
 
 # v2.0
 
