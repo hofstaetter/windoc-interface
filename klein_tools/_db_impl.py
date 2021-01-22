@@ -78,7 +78,7 @@ class Intern:
             return self._data['phone']
 
         c = self._ctx.unmanaged_cursor()
-        c.execute("SELECT Telefon, Tel1, Tel2, Handy FROM Stammdaten sd JOIN Stammzusatz sz ON sd.Intern = sz.Intern WHERE sd.Intern = ?", self.Intern)
+        c.execute("SELECT Telefon, Tel1, Tel2, Handy FROM Stammdaten sd LEFT JOIN Stammzusatz sz ON sd.Intern = sz.Intern WHERE sd.Intern = ?", self.Intern)
         res = c.fetchone()
         c.close()
 

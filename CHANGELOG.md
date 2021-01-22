@@ -1,4 +1,9 @@
 
+# v2.2
+
+Change telephone join type from JOIN to LEFT JOIN.
+Patients are not required to have Stammzusatz record.
+
 # v2.1
 
 Fix missing import
