@@ -103,6 +103,27 @@ class Intern:
         else:
             return self._query_phone()
 
+    def _query_mail(self):
+        c = self._ctx.unmanaged_cursor()
+        c.execute("SELECT Email FROM Stammdaten WHERE Intern = ?", self.Intern)
+        res = c.fetchone()
+        c.close()
+
+        self._data['mail'] = res.Email
+        return res.Email
+
+    def mail(self):
+        """Retrieve mail address
+
+        Returns:
+            some string representation of a mail address.
+        """
+
+        if 'mail' in self._data:
+            return self._data['mail']
+        else:
+            return self._query_mail()
+
     def kassen_ref(self):
         c = self._ctx.unmanaged_cursor()
         # encoding problems with "Versicherungsträger" should be column index 14
