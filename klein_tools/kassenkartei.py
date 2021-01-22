@@ -1,3 +1,4 @@
+import datetime
 
 def leistung(datum, pos, cnt, kasse, clock): #, price=None, clock=None, chef=None, pstat=None):
     if type(datum) == datetime.datetime:
