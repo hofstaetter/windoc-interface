@@ -67,16 +67,16 @@ class Intern:
         c.close()
         return res and len(res) == 1
 
-    def phone(self):
-        """Retrieve phone number
+    def _find_phone(self, Telefon, Tel1, Tel2, Handy):
+        for attempt in [ (Handy, 'Handy'), (Telefon, 'Telefon'), (Tel1, 'Tel1'), (Tel2, 'Tel2') ]:
+            if attempt[0] is not None and attempt[0].strip() != '':
+                ret = attempt[0].strip()
+                self._data['phone'] = ret
+                return ret
 
-        Returns:
-            some string representation of a phone number.
-            Takes first match in columns with following order:
-            Handy, Telefon, Tel1, Tel2"""
-        if 'phone' in self._data:
-            return self._data['phone']
+        return None
 
+    def _query_phone(self):
         c = self._ctx.unmanaged_cursor()
         c.execute("SELECT Telefon, Tel1, Tel2, Handy FROM Stammdaten sd LEFT JOIN Stammzusatz sz ON sd.Intern = sz.Intern WHERE sd.Intern = ?", self.Intern)
         res = c.fetchone()
@@ -87,13 +87,20 @@ class Intern:
 
         Telefon, Tel1, Tel2, Handy = res
 
-        for attempt in [ (Handy, 'Handy'), (Telefon, 'Telefon'), (Tel1, 'Tel1'), (Tel2, 'Tel2') ]:
-            if attempt[0] is not None and attempt[0].strip() != '':
-                ret = attempt[0].strip()
-                self._data['phone'] = ret
-                return ret
+        return self._find_phone(Telefon, Tel1, Tel2, Handy)
 
-        return None
+    def phone(self):
+        """Retrieve phone number
+
+        Returns:
+            some string representation of a phone number.
+            Takes first match in columns with following order:
+            Handy, Telefon, Tel1, Tel2"""
+
+        if 'phone' in self._data:
+            return self._data['phone']
+        else:
+            return self._query_phone()
 
     def kassen_ref(self):
         c = self._ctx.unmanaged_cursor()
