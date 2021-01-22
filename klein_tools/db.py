@@ -23,6 +23,7 @@ class Connection:
     def __exit__(self, exc_type, exc_val, exc_traceback):
         for c in self._cleanup:
             c.close()
+        self._cleanup = []
         self.conn.close()
         self.conn = None
         self._log.debug("Left context, disconnected")
