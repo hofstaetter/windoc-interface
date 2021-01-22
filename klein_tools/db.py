@@ -8,6 +8,42 @@ import pyodbc
 
 class StateError(Exception): pass
 
+class Queries:
+    def __init__(self, ctx):
+        self._ctx = ctx
+
+    def all_Interns_with_comms(self, with_condition=None):
+        """Returns a list of preinitialized Intern objects
+
+        Internally a SELECT query is executed with a single join.
+        With the parameter with_condition a condition can be appended.
+        Any query valid after a JOIN-ON cluase can be specified.
+        Tables Stammdaten and Stammzusatz are already joined.
+
+        Be aware of SQL-injection vulnerabilities.
+
+        Parameters:
+            with_condition - str, SQL query to append to filter results
+
+        Returns:
+            list[Intern]
+        """
+        c = self._ctx.unmanaged_cursor()
+        c.execute("SELECT Intern, Email, Telefon, Tel1, Tel2, Handy FROM Stammdaten JOIN Stammzusatz ON Stammdaten.Intern = Stammzusatz.Intern %s" % with_condition)
+        res = c.fetchall()
+        c.close()
+
+        ret = []
+        for r in res:
+            ii, Email, Telefon, Tel1, Tel2, Handy = r
+            i = self._ctx.Intern(ii)
+            i._find_phone(Telefon, Tel1, Tel2, Handy)
+            if Email and Email.strip() != '':
+                i._data['mail'] = Email
+            ret.append(i)
+
+        return ret
+
 class Connection:
     def __init__(self, dsn):
         self._log = _log.getChild('Connection')
@@ -47,6 +83,9 @@ class Connection:
             return obj
         else:
             raise StateError("Needs to be executed in with-context")
+
+    def Queries(self):
+        return Queries(self)
 
     def KTable(self, handle):
         return _db.KTable(self, handle)
