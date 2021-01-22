@@ -1,4 +1,8 @@
 
+# v2.3
+
+Added Queries.
+
 # v2.2
 
 Change telephone join type from JOIN to LEFT JOIN.
