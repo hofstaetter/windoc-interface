@@ -129,7 +129,7 @@ class Intern:
         else:
             return self._query_mail()
 
-    def _query_data(slef):
+    def _query_data(self):
         c = self._ctx.unmanaged_cursor()
         c.execute("SELECT Familienname, Vorname, Geschlecht, Titel, Geburtsdatum FROM Stammdaten WHERE Intern = ?", self.Intern)
         res = c.fetchone()
