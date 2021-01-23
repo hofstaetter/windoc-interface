@@ -136,6 +136,7 @@ class Intern:
         c.close()
 
         self._data['title'] = None
+        title = res.Titel
         if title:
             title = title.strip()
             if title != '':
