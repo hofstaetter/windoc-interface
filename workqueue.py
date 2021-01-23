@@ -135,3 +135,32 @@ def remove(task):
     c.commit()
     c.close()
 
+def unlock(task_or_tasks):
+    """Unlocks tasks making it available again for subsequent workers
+
+    Parameters:
+        task_or_tasks - either a task identifier (int|pyodbc.Row) or a list of them
+
+    Throws:
+        pyodbc related exceptions will not be caught"""
+
+    if type(task_or_tasks) in [ int, pyodbc.Row ]:
+        tasks = [ task_or_tasks ]
+    elif type(task_or_tasks) == list:
+        tasks = task_or_tasks
+    else:
+        raise TypeError("type of parameter task_or_tasks is neither a task identifier or a list")
+
+    tasknums = []
+    for t in tasks:
+        if type(t) == int:
+            tasknums.append(str(t))
+        elif type(t) == pyodbc.Row:
+            tasknums.append(str(t.id))
+        else:
+            raise TypeError("element in list parameter task_or_tasks has wrong type %s expecting int or pyodbc.Row" % repr(type(t)))
+
+    c = _db_handle.cursor()
+    c.execute("UPDATE X_HOF_WORKQUEUE SET lock = NULL WHERE id IN (%s) AND lock = ?" % ','.join(tasknums), _lock_magic)
+    c.commit()
+    c.close()

@@ -1,4 +1,9 @@
 
+# v2.4
+
+Workqueue update:
+* Added unlock function to return task to queue
+
 # v2.3
 
 Added Queries.
