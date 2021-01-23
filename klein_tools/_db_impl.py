@@ -1,6 +1,8 @@
 
 from .db import _log
 
+import datetime
+
 class KTable:
     LUT = {
             '11': 'K10', # ÖGK-W
@@ -126,6 +128,45 @@ class Intern:
             return self._data['mail']
         else:
             return self._query_mail()
+
+    def _query_data(slef):
+        c = self._ctx.unmanaged_cursor()
+        c.execute("SELECT Familienname, Vorname, Geschlecht, Titel, Geburtsdatum FROM Stammdaten WHERE Intern = ?", self.Intern)
+        res = c.fetchone()
+        c.close()
+
+        self._data['title'] = None
+        if title:
+            title = title.strip()
+            if title != '':
+                self._data['title'] = title
+        self._data['firstname'] = res.Vorname
+        self._data['surname'] = res.Familienname
+        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum, "%Y%m%d")
+        if res.Geschlecht == '1':
+            self._data['sex'] = 'M'
+        else:
+            self._data['sex'] = 'F'
+
+    def fullname(self):
+        if 'surname' not in self._data:
+            self._query_data()
+
+        hon = 'Herr' if self._data['sex'] == 'M' else 'Frau'
+        title = self._data['title'] + ' ' if self._data['title'] else ''
+        fir = self._data['firstname']
+        sur = self._data['surname']
+
+        return f"{hon} {title}{fir} {sur}"
+
+    def age(self):
+        if 'dob' not in self._data:
+            self._query_data()
+
+        now = datetime.datetime.now()
+        diff = now - self._data['dob']
+        
+        return int(diff.days/365)
 
     def kassen_ref(self):
         c = self._ctx.unmanaged_cursor()
