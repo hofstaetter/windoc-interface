@@ -143,7 +143,7 @@ class Intern:
                 self._data['title'] = title
         self._data['firstname'] = res.Vorname
         self._data['surname'] = res.Familienname
-        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum, "%Y%m%d")
+        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum.strip(), "%Y%m%d")
         if res.Geschlecht == '1':
             self._data['sex'] = 'M'
         else:
