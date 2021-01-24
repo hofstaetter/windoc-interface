@@ -141,8 +141,8 @@ class Intern:
             title = title.strip()
             if title != '':
                 self._data['title'] = title
-        self._data['firstname'] = res.Vorname
-        self._data['surname'] = res.Familienname
+        self._data['firstname'] = res.Vorname.strip()
+        self._data['surname'] = res.Familienname.strip()
         self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum.strip(), "%Y%m%d")
         if res.Geschlecht == '1':
             self._data['sex'] = 'M'
