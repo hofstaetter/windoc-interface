@@ -1,6 +1,10 @@
 
 # Changelog
 
+## v2.6
+
+Fix DOB parsing
+
 ## v2.5
 
 Added methods to Intern:
