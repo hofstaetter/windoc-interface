@@ -152,7 +152,7 @@ class Intern:
                 dob = dob[:4] + '19' + dob[4:]
             else:
                 dob = dob[:4] + '20' + dob[4:]
-        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum.strip(), "%d%m%Y")
+        self._data['dob'] = datetime.datetime.strptime(dob, "%d%m%Y")
 
         if res.Geschlecht == '1':
             self._data['sex'] = 'M'
