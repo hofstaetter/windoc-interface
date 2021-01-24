@@ -141,9 +141,19 @@ class Intern:
             title = title.strip()
             if title != '':
                 self._data['title'] = title
+
         self._data['firstname'] = res.Vorname.strip()
         self._data['surname'] = res.Familienname.strip()
-        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum.strip(), "%Y%m%d")
+
+        dob = res.Geburtsdatum.strip()
+        year = int(dob[4:])
+        if year < 100: # 2-digit year fix
+            if year > int(datetime.datetime.now().year % 100):
+                dob = dob[:4] + '19' + dob[4:]
+            else:
+                dob = dob[:4] + '20' + dob[4:]
+        self._data['dob'] = datetime.datetime.strptime(res.Geburtsdatum.strip(), "%d%m%y")
+
         if res.Geschlecht == '1':
             self._data['sex'] = 'M'
         else:
