@@ -12,8 +12,8 @@ class Kassenkartei:
     def make_log(msg):
         if type(msg) != str:
             raise TypeError("argument msg must be a string")
-        if len(msg) > 183:
-            raise ValueError("argument msg must not exceed 183 chars")
+        if len(msg) > 80:
+            raise ValueError("argument msg must not exceed 80 chars")
 
         return msg
 
