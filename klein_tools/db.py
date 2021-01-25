@@ -3,6 +3,7 @@ from . import _log as _parent_log
 _log = _parent_log.getChild('db')
 
 from . import _db_impl as _db
+from . import kassenkartei as _kk
 
 import pyodbc
 
@@ -99,6 +100,9 @@ class Connection:
 
     def LabTemplate(self, order):
         return _db.LabTemplate(self, order)
+
+    def Kassenkartei(self, i):
+        return _kk.Kassenkartei(i, ctx=self)
 
 class Pool:
     def __init__(self, dsn):

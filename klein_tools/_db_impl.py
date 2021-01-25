@@ -1,5 +1,6 @@
 
 from .db import _log
+from .kassenkartei import Kassenkartei
 
 import datetime
 
@@ -56,6 +57,9 @@ class Intern:
         self._ctx = ctx
         self._data = {}
         self.Intern = i
+
+    def kartei(self):
+        return Kassenkartei(self.Intern, self._ctx)
 
     def exists(self):
         """Checks if this Intern exists in DB

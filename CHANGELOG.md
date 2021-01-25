@@ -1,6 +1,16 @@
 
 # Changelog
 
+## v3.0
+
+Recode kassenkartei
+
+* new class `klein_tools.kassenkartei.Kassenkartei` (represents Kartei for specific Intern)
+* moved free function `klein_tools.kassenkartei.leistung` to new class
+* added class to DB context manager
+* added `klein_tools.kassenkartei.Kassenkartei.log` method
+* added `klein_tools._db_impl.Intern.kartei` method to get Kassenkartei object for Intern
+
 ## v2.6
 
 Fix DOB parsing
