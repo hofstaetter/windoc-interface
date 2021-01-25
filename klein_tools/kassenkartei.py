@@ -7,7 +7,7 @@ class Kassenkartei:
 
     def __init__(self, Intern, ctx=None):
         self.Intern = Intern
-        self._ctx = None
+        self._ctx = ctx
 
     def make_log(msg):
         if type(msg) != str:

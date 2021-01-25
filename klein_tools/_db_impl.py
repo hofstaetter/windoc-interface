@@ -59,7 +59,7 @@ class Intern:
         self.Intern = i
 
     def kartei(self):
-        return Kassenkartei(self.Intern, self._ctx)
+        return Kassenkartei(self.Intern, ctx=self._ctx)
 
     def exists(self):
         """Checks if this Intern exists in DB
