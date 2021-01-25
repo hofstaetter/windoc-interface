@@ -17,9 +17,24 @@ class Kassenkartei:
 
         return msg
 
-    def log(self, datum, msg):
+    def log(self, msg, datum=None):
         c = self._ctx.unmanaged_cursor()
-        _log.info(f"Intern={self.Intern} Kartei-Log: {msg}")
+        if datum:
+            if type(datum) == datetime.datetime:
+                datum = datum.strftime("%Y%m%d")
+            elif type(datum) == str:
+                if len(datum) != 8:
+                    raise ValueError("argument datum expects CHAR(8) date value")
+            elif type(datum) == int:
+                datum = str(datum)
+                if len(datum) != 8:
+                    raise ValueError("argument datum expects CHAR(8) date value")
+            else:
+                raise TypeError("argument datum has wrong type. Use one of datetime, str, int")
+        else:
+            datum = datetime.datetime.now().strftime('%Y%m%d')
+
+        _log.info(f"Intern={self.Intern} Date={datum} Kartei-Log: {msg}")
         c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'T', Kassenkartei.make_log(msg))
         c.close()
 
