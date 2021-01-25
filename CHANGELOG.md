@@ -1,6 +1,10 @@
 
 # Changelog
 
+## v3.1
+
+Add method to get all phone numbers associated with Intern
+
 ## v3.0
 
 Recode kassenkartei

@@ -74,13 +74,15 @@ class Intern:
         return res and len(res) == 1
 
     def _find_phone(self, Telefon, Tel1, Tel2, Handy):
+        self._data['phones'] = [ x.strip() for x in filter(None, [ Handy, Telefon, Tel1, Tel2 ]) ]
+
         for attempt in [ (Handy, 'Handy'), (Telefon, 'Telefon'), (Tel1, 'Tel1'), (Tel2, 'Tel2') ]:
             if attempt[0] is not None and attempt[0].strip() != '':
                 ret = attempt[0].strip()
-                self._data['phone'] = ret
+                self._data['primary_phone'] = ret
                 return ret
 
-        self._data['phone'] = None
+        self._data['primary_phone'] = None
         return None
 
     def _query_phone(self):
@@ -97,17 +99,29 @@ class Intern:
         return self._find_phone(Telefon, Tel1, Tel2, Handy)
 
     def phone(self):
-        """Retrieve phone number
+        """Retrieve primary phone number
 
         Returns:
             some string representation of a phone number.
             Takes first match in columns with following order:
             Handy, Telefon, Tel1, Tel2"""
 
-        if 'phone' in self._data:
-            return self._data['phone']
+        if 'primary_phone' in self._data:
+            return self._data['primary_phone']
         else:
             return self._query_phone()
+
+    def phones(self):
+        """Retrieve all associated phone numbers
+
+        Returns:
+            list of string representations of a phone numbers
+        """
+
+        if 'phones' not in self._data:
+            self._query_phone()
+
+        return self._data['phones']
 
     def _query_mail(self):
         c = self._ctx.unmanaged_cursor()
