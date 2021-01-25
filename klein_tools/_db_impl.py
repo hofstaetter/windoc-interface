@@ -74,7 +74,7 @@ class Intern:
         return res and len(res) == 1
 
     def _find_phone(self, Telefon, Tel1, Tel2, Handy):
-        self._data['phones'] = filter(None, [ x.strip() for x in [ Handy, Telefon, Tel1, Tel2 ] if x is not None ])
+        self._data['phones'] = list(filter(None, [ x.strip() for x in [ Handy, Telefon, Tel1, Tel2 ] if x is not None ]))
 
         for attempt in [ (Handy, 'Handy'), (Telefon, 'Telefon'), (Tel1, 'Tel1'), (Tel2, 'Tel2') ]:
             if attempt[0] is not None and attempt[0].strip() != '':
