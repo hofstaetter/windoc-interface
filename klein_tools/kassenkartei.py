@@ -36,6 +36,7 @@ class Kassenkartei:
 
         _log.info(f"Intern={self.Intern} Date={datum} Kartei-Log: {msg}")
         c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'T', Kassenkartei.make_log(msg))
+        c.commit()
         c.close()
 
     def make_leistung(datum, pos, cnt, kasse, clock): #, price=None, clock=None, chef=None, pstat=None):
@@ -94,5 +95,6 @@ class Kassenkartei:
         eintr = Kassenkartei.make_leistung(override_ldatum or datum, pos, cnt, kasse, clock)
         _log.info(f"Intern={self.Intern} Entry-Date={datum} Sub-Date={override_ldatum or datum} Entry={eintr}")
         c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'T', eintr)
+        c.commit()
         c.close()
 
