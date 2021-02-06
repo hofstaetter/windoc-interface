@@ -1,6 +1,11 @@
 
 # Changelog
 
+## v4.1
+
+LabTemplate does not require `Labsch` entry anymore.
+`group` and `service` attributes may not exist.
+
 ## v4.0
 
 **API Changes**
