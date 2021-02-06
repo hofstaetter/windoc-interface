@@ -1,6 +1,14 @@
 
 # Changelog
 
+## v4.0
+
+**API Changes**
+* LabTemplate now requires device identifier for 2nd argument
+  Old: db context, analyte name
+  New: db context, device identifier, analyte name
+  Analyte names are for example: 'SO' for sofia, 'XN' for sysmex
+
 ## v3.1
 
 Add method to get all phone numbers associated with Intern

@@ -206,9 +206,9 @@ class Intern:
         return self._ctx.KTable(res[14])
 
 class LabTemplate:
-    def __init__(self, ctx, sofia_order):
+    def __init__(self, ctx, device, sofia_order):
         self._ctx = ctx
-        self.lab = 'SO' + sofia_order
+        self.lab = device + sofia_order
         # step 1: lookup in lab templates
         c = self._ctx.unmanaged_cursor()
         c.execute("SELECT * FROM Labsch WHERE Kurz = ?", self.lab)

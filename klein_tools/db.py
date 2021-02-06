@@ -98,8 +98,8 @@ class Connection:
     def Intern(self, i):
         return _db.Intern(self , i)
 
-    def LabTemplate(self, order):
-        return _db.LabTemplate(self, order)
+    def LabTemplate(self, device, order):
+        return _db.LabTemplate(self, device, order)
 
     def Kassenkartei(self, i):
         return _kk.Kassenkartei(i, ctx=self)
