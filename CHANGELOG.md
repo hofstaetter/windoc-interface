@@ -1,6 +1,10 @@
 
 # Changelog
 
+## v4.2
+
+Intern now has `firstname`, `surname`, `sex` and `dob` getter functions.
+
 ## v4.1
 
 LabTemplate does not require `Labsch` entry anymore.

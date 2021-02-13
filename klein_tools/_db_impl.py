@@ -177,6 +177,21 @@ class Intern:
         else:
             self._data['sex'] = 'F'
 
+    def sex(self):
+        if 'sex' not in self._data:
+            self._query_data()
+        return self._data['sex']
+
+    def firstname(self):
+        if 'firstname' not in self._data:
+            self._query_data()
+        return self._data['firstname']
+
+    def surname(self):
+        if 'surname' not in self._data:
+            self._query_data()
+        return self._data['surname']
+
     def fullname(self):
         if 'surname' not in self._data:
             self._query_data()
@@ -187,6 +202,12 @@ class Intern:
         sur = self._data['surname']
 
         return f"{hon} {title}{fir} {sur}"
+
+    def dob(self):
+        if 'dob' not in self._data:
+            self._query_data()
+
+        return self._data['dob']
 
     def age(self):
         if 'dob' not in self._data:
