@@ -149,7 +149,7 @@ class Intern:
 
     def _query_data(self):
         c = self._ctx.unmanaged_cursor()
-        c.execute("SELECT Familienname, Vorname, Geschlecht, Titel, Geburtsdatum FROM Stammdaten WHERE Intern = ?", self.Intern)
+        c.execute("SELECT * FROM Stammdaten WHERE Intern = ?", self.Intern)
         res = c.fetchone()
         c.close()
 
@@ -177,6 +177,9 @@ class Intern:
         else:
             self._data['sex'] = 'F'
 
+        self._data['height'] = res.Grösse
+        self._data['weight'] = res.Gewicht
+
     def sex(self):
         if 'sex' not in self._data:
             self._query_data()
@@ -202,6 +205,18 @@ class Intern:
         sur = self._data['surname']
 
         return f"{hon} {title}{fir} {sur}"
+
+    def height(self):
+        if 'height' not in self._data:
+            self._query_data()
+
+        return self._data['height']
+
+    def weight(self):
+        if 'weight' not in self._data:
+            self._query_data()
+
+        return self._data['weight']
 
     def dob(self):
         if 'dob' not in self._data:

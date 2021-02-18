@@ -1,6 +1,10 @@
 
 # Changelog
 
+## v4.3
+
+Intern now has `height` and `weight` getter functions.
+
 ## v4.2
 
 Intern now has `firstname`, `surname`, `sex` and `dob` getter functions.
