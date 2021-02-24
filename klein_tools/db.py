@@ -6,6 +6,7 @@ from . import _db_impl as _db
 from . import kassenkartei as _kk
 
 import pyodbc
+import datetime
 
 class StateError(Exception): pass
 
@@ -94,6 +95,26 @@ class Connection:
 
     def KTable(self, handle):
         return _db.KTable(self, handle)
+
+    def create_Intern(self, firstname, lastname, sex, dob, svnr, address, phone, kcode, county, category):
+        SEX_LUT = {
+                1 : '1',
+                2 : '2',
+                '1': '1',
+                '2': '2',
+                'M': '1',
+                'W': '2',
+                'm': '1',
+                'w': '2'
+                }
+        c = self.unmanaged_cursor()
+        if type(dob) == datetime.datetime:
+            dob = dob.strftime('%d%m%Y')
+        c.execute("EXECUTE createintern(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", firstname, lastname, SEX_LUT[sex], dob, svnr, address, phone, kcode, county, category)
+        internid = c.fetchone()[0]
+        c.commit()
+        c.close()
+        return _db.Intern(self, internid)
 
     def Intern(self, i):
         return _db.Intern(self , i)

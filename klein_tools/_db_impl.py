@@ -163,6 +163,10 @@ class Intern:
         self._data['firstname'] = res.Vorname.strip()
         self._data['surname'] = res.Familienname.strip()
 
+        self._data['address'] = res.Straße.strip()
+        self._data['zip'] = res.Postleitzahl.strip()
+        self._data['city'] = res.Wohnort.strip()
+
         dob = res.Geburtsdatum.strip()
         year = int(dob[4:])
         if year < 100: # 2-digit year fix
@@ -172,28 +176,45 @@ class Intern:
                 dob = dob[:4] + '20' + dob[4:]
         self._data['dob'] = datetime.datetime.strptime(dob, "%d%m%Y")
 
+        self._data['svnr'] = res.Versicherungsnummer.strip() + res.Geburtsdatum.strip()
+
         if res.Geschlecht == '1':
             self._data['sex'] = 'M'
         else:
             self._data['sex'] = 'F'
 
-        self._data['height'] = res.Grösse
-        self._data['weight'] = res.Gewicht
+        self._data['height'] = res.Grösse.strip()
+        self._data['weight'] = res.Gewicht.strip()
+
+        for k in ['address', 'zip', 'city', 'height', 'weight']:
+            if self._data[k] == '':
+                self._data[k] = None
+
+    def _get_data(self, key):
+        if key not in self._data:
+            self._query_data()
+        return self._data[key]
+
+    def address(self):
+        return self._get_data('address')
+
+    def zip(self):
+        return self._get_data('zip')
+
+    def city(self):
+        return self._get_data('city')
+
+    def svnr(self):
+        return self._get_data('svnr')
 
     def sex(self):
-        if 'sex' not in self._data:
-            self._query_data()
-        return self._data['sex']
+        return self._get_data('sex')
 
     def firstname(self):
-        if 'firstname' not in self._data:
-            self._query_data()
-        return self._data['firstname']
+        return self._get_data('firstname')
 
     def surname(self):
-        if 'surname' not in self._data:
-            self._query_data()
-        return self._data['surname']
+        return self._get_data('surname')
 
     def fullname(self):
         if 'surname' not in self._data:
@@ -207,29 +228,17 @@ class Intern:
         return f"{hon} {title}{fir} {sur}"
 
     def height(self):
-        if 'height' not in self._data:
-            self._query_data()
-
-        return self._data['height']
+        return self._get_data('height')
 
     def weight(self):
-        if 'weight' not in self._data:
-            self._query_data()
-
-        return self._data['weight']
+        return self._get_data('weight')
 
     def dob(self):
-        if 'dob' not in self._data:
-            self._query_data()
-
-        return self._data['dob']
+        return self._get_data('dob')
 
     def age(self):
-        if 'dob' not in self._data:
-            self._query_data()
-
         now = datetime.datetime.now()
-        diff = now - self._data['dob']
+        diff = now - self.dob()
         
         return int(diff.days/365)
 

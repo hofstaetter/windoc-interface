@@ -9,16 +9,8 @@ class Kassenkartei:
         self.Intern = Intern
         self._ctx = ctx
 
-    def make_log(msg):
-        if type(msg) != str:
-            raise TypeError("argument msg must be a string")
-        if len(msg) > 80:
-            raise ValueError("argument msg must not exceed 80 chars")
-
-        return msg
-
-    def log(self, msg, datum=None):
-        c = self._ctx.unmanaged_cursor()
+    @staticmethod
+    def _handle_date(datum):
         if datum:
             if type(datum) == datetime.datetime:
                 datum = datum.strftime("%Y%m%d")
@@ -33,24 +25,90 @@ class Kassenkartei:
                 raise TypeError("argument datum has wrong type. Use one of datetime, str, int")
         else:
             datum = datetime.datetime.now().strftime('%Y%m%d')
+        return datum
 
+    @staticmethod
+    def _handle_str(s, exactlen=None):
+        if type(s) != str:
+            raise TypeError("argument name must be a string not '%s'" % type(s))
+        if exactlen:
+            if len(s) > exactlen:
+                raise ValueError(f"argument name may not exceed {exactlen} chars")
+            s += ' ' * (exactlen - len(s))
+        return s
+
+    @staticmethod
+    def make_diagnose(diag, kcode, datum=None):
+        datum = Kassenkartei._handle_date(datum)
+        diag = Kassenkartei._handle_str(diag, exactlen=78)
+        eintr = f"{datum} {diag}{kcode}"
+        return eintr
+
+    def diagnose(self, diag, datum=None):
+        c = self._ctx.unmanaged_cursor()
+        datum = Kassenkartei._handle_date(datum)
+        kcode = self._ctx.Intern(self.Intern).kassen_ref().num
+        eintr = Kassenkartei.make_diagnose(diag, kcode, datum)
+        _log.info(f"Intern={self.Intern} Date={datum} Kartei-Diagnose: {eintr}")
+        c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'D', eintr)
+        c.commit()
+        c.close()
+
+    @staticmethod
+    def make_ecard(idstr, withocard):
+        prefix = 'o-card,' if withocard else ''
+        return f"{prefix}{idstr}"
+
+    def ecard(self, idstr, withocard, datum=None):
+        c = self._ctx.unmanaged_cursor()
+        datum = Kassenkartei._handle_date(datum)
+        eintr = Kassenkartei.make_ecard(idstr, withocard)
+        _log.info(f"Intern={self.Intern} Date={datum} Kartei-Ecard: {eintr}")
+        c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'E', eintr)
+        c.commit()
+        c.close()
+
+    @staticmethod
+    def make_impfung(name, charge, datum=None, erledigt=False):
+        if type(name) != str:
+            raise TypeError("argument name must be a string not '%s'" % type(name))
+        if len(name) > 53:
+            raise ValueError("argument name may not exceed 53 chars")
+        charge = charge or ''
+        datum = Kassenkartei._handle_date(datum)
+        name += ' '*(53-len(name))
+        erledigt = 'j' if erledigt else ' '
+        return f"{datum}{name}{erledigt}{charge}"
+
+    def impfung(self, name, charge, datum=None, erledigt=False):
+        c = self._ctx.unmanaged_cursor()
+        datum = Kassenkartei._handle_date(datum)
+        eintr = Kassenkartei.make_impfung(name, charge, datum, erledigt)
+        _log.info(f"Intern={self.Intern} Date={datum} Kartei-Impfung: {eintr}")
+        c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'I', eintr)
+        c.commit()
+        c.close()
+
+    @staticmethod
+    def make_log(msg):
+        if type(msg) != str:
+            raise TypeError("argument msg must be a string")
+        if len(msg) > 80:
+            raise ValueError("argument msg must not exceed 80 chars")
+
+        return msg
+
+    def log(self, msg, datum=None):
+        c = self._ctx.unmanaged_cursor()
+        datum = Kassenkartei._handle_date(datum)
         _log.info(f"Intern={self.Intern} Date={datum} Kartei-Log: {msg}")
         c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'T', Kassenkartei.make_log(msg))
         c.commit()
         c.close()
 
+    @staticmethod
     def make_leistung(datum, pos, cnt, kasse, clock): #, price=None, clock=None, chef=None, pstat=None):
-        if type(datum) == datetime.datetime:
-            datum = datum.strftime("%Y%m%d")
-        elif type(datum) == str:
-            if len(datum) != 8:
-                raise ValueError("argument datum expects CHAR(8) date value")
-        elif type(datum) == int:
-            datum = str(datum)
-            if len(datum) != 8:
-                raise ValueError("argument datum expects CHAR(8) date value")
-        else:
-            raise TypeError("argument datum has wrong type. Use one of datetime, str, int")
+        datum = Kassenkartei._handle_date(datum)
 
         if type(pos) != str:
             raise TypeError("argument pos must be a string")
@@ -92,9 +150,10 @@ class Kassenkartei:
 
     def leistung(self, datum, pos, cnt, kasse, clock=None, override_ldatum=None):
         c = self._ctx.unmanaged_cursor()
+        datum = Kassenkartei._handle_date(datum)
         eintr = Kassenkartei.make_leistung(override_ldatum or datum, pos, cnt, kasse, clock)
         _log.info(f"Intern={self.Intern} Entry-Date={datum} Sub-Date={override_ldatum or datum} Entry={eintr}")
-        c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'T', eintr)
+        c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'L', eintr)
         c.commit()
         c.close()
 

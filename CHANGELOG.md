@@ -1,6 +1,25 @@
 
 # Changelog
 
+## v5.0
+
+Better code, more features.
+
+Features with Intern:
+* `address()`
+* `zip()` code
+* `city()`
+* `svnr()`
+* `sex()`
+
+Features in db:
+* `create_Intern`
+
+Features in Kassenkartei:
+* diagnose
+* ecard
+* impfung
+
 ## v4.3
 
 Intern now has `height` and `weight` getter functions.
