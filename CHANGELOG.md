@@ -1,6 +1,10 @@
 
 # Changelog
 
+## v5.1
+
+Fix for DOB parsing (other column)
+
 ## v5.0
 
 Better code, more features.
