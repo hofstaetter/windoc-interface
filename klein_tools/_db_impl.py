@@ -167,14 +167,7 @@ class Intern:
         self._data['zip'] = res.Postleitzahl.strip()
         self._data['city'] = res.Wohnort.strip()
 
-        dob = res.Geburtsdatum.strip()
-        year = int(dob[4:])
-        if year < 100: # 2-digit year fix
-            if year > int(datetime.datetime.now().year % 100):
-                dob = dob[:4] + '19' + dob[4:]
-            else:
-                dob = dob[:4] + '20' + dob[4:]
-        self._data['dob'] = datetime.datetime.strptime(dob, "%d%m%Y")
+        self._data['dob'] = datetime.datetime.strptime(res.Beitragsnummer.strip(), "%d%m%Y")
 
         self._data['svnr'] = res.Versicherungsnummer.strip() + res.Geburtsdatum.strip()
 
