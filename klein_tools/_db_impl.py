@@ -163,13 +163,7 @@ class Intern:
         self._data['firstname'] = res.Vorname.strip()
         self._data['surname'] = res.Familienname.strip()
 
-        dob = res.Geburtsdatum.strip()
-        year = int(dob[4:])
-        if year < 100: # 2-digit year fix
-            if year > int(datetime.datetime.now().year % 100):
-                dob = dob[:4] + '19' + dob[4:]
-            else:
-                dob = dob[:4] + '20' + dob[4:]
+        dob = res.Beitragsnummer.strip()
         self._data['dob'] = datetime.datetime.strptime(dob, "%d%m%Y")
 
         if res.Geschlecht == '1':
