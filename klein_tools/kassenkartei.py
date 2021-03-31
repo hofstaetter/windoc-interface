@@ -69,21 +69,23 @@ class Kassenkartei:
         c.close()
 
     @staticmethod
-    def make_impfung(name, charge, datum=None, erledigt=False):
-        if type(name) != str:
-            raise TypeError("argument name must be a string not '%s'" % type(name))
+    def make_impfung(name, charge='', beschreibung='', datum=None, erledigt=False):
+        if type(name) != str or type(charge) != str or type(beschreibung) != str:
+            raise TypeError("argument name/charge/beschreibung must be a string not '%s'" % type(name))
         if len(name) > 53:
             raise ValueError("argument name may not exceed 53 chars")
-        charge = charge or ''
+        if len(charge) > 20:
+            raise ValueError("argument charge may not exceed 20 chars")
         datum = Kassenkartei._handle_date(datum)
         name += ' '*(53-len(name))
+        charge += ' '*(20-len(charge))
         erledigt = 'j' if erledigt else ' '
-        return f"{datum}{name}{erledigt}{charge}"
+        return f"{datum}{name}{erledigt}{charge}{beschreibung}"
 
-    def impfung(self, name, charge, datum=None, erledigt=False):
+    def impfung(self, name, charge='', beschreibung='', datum=None, erledigt=False):
         c = self._ctx.unmanaged_cursor()
         datum = Kassenkartei._handle_date(datum)
-        eintr = Kassenkartei.make_impfung(name, charge, datum, erledigt)
+        eintr = Kassenkartei.make_impfung(name, charge, beschreibung, datum, erledigt)
         _log.info(f"Intern={self.Intern} Date={datum} Kartei-Impfung: {eintr}")
         c.execute("INSERT INTO Kassenkartei (Intern, Datum, Kennung, Eintragung) VALUES (?,?,?,?)", self.Intern, datum, 'I', eintr)
         c.commit()
