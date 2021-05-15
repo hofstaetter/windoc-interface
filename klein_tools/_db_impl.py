@@ -216,9 +216,9 @@ class Intern:
         hon = 'Herr' if self._data['sex'] == 'M' else 'Frau'
         title = self._data['title'] + ' ' if self._data['title'] else ''
         fir = self._data['firstname']
-        sur = self._data['surname']
+        sur = self._data['surname'].upper()
 
-        return f"{hon} {title}{fir} {sur}"
+        return f"{hon} {title}{sur}, {fir}"
 
     def height(self):
         return self._get_data('height')
