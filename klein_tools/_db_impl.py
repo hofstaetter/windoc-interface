@@ -22,6 +22,13 @@ class KTable:
             '1A': 'K1A', # KFA Wien
             '4A': 'K4A', # KFA Linz
             '5A': 'K5A', # KFA Graz
+            '21': 'K10', # ALT Betriebskrankenkasse Austria Tabak -> ÖGK-N
+            '22': 'K07', # ALT Betriebskrankenkasse der Wiener Verkehrsbetriebe -> BVAEB-OEB
+            '23': 'K10', # ALT? -> ÖGK-N
+            '24': 'K10', # ALT Betriebskrankenkasse Mondi -> ÖGK-N
+            '25': 'K10', # ALT Betriebskrankenkasse VABS -> ÖGK-N
+            '71': '1A', # ALT? FÜR -> KFA Wien
+            '04': 'K10', # ALT -> ÖGK-N
             'PR': 'KPR', # Privat
             }
 
@@ -29,7 +36,10 @@ class KTable:
         assert type(handle) == str and len(handle) == 2
         self._ctx = ctx
         self.num = handle
-        self.table = KTable.LUT[handle]
+        try:
+            self.table = KTable.LUT[handle]
+        except KeyError:
+            self.table = 'KPR'
 
     def position_from_service(self, serv):
         c = self._ctx.unmanaged_cursor()
